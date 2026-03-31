@@ -1,8 +1,17 @@
 import { useState } from "react"
 
 const defaultMeds = [
-  { id: 1, name: "Adderall XR 15mg", scheduledTime: "9:30", done: false, takenAt: null },
-  { id: 2, name: "Vraylar 1.5mg", scheduledTime: "9:30", done: false, takenAt: null },
+  { id: 1, name: "Adderall XR 15mg", scheduledTime: "09:30", done: false, takenAt: null },
+  { id: 2, name: "Vraylar 1.5mg", scheduledTime: "09:30", done: false, takenAt: null },
+]
+
+const defaultRooms = [
+  { id: "kitchen", name: "Kitchen" },
+  { id: "livingroom", name: "Living Room" },
+  { id: "bathrooms", name: "Bathrooms" },
+  { id: "bedrooms", name: "Bedrooms" },
+  { id: "laundry", name: "Laundry Room" },
+  { id: "car", name: "Car/Garage" },
 ]
 
 function Settings() {
@@ -11,16 +20,33 @@ function Settings() {
     return saved ? JSON.parse(saved) : defaultMeds
   })
 
+  const [cleaning, setCleaning] = useState(() => {
+    const saved = localStorage.getItem("cleaning")
+    return saved ? JSON.parse(saved) : []
+  })
+
+  const [activeRoom, setActiveRoom] = useState("kitchen")
   const [newMedName, setNewMedName] = useState("")
   const [newMedTime, setNewMedTime] = useState("09:30")
+  const [newTaskName, setNewTaskName] = useState("")
   const [editingMed, setEditingMed] = useState(null)
   const [savedMsg, setSavedMsg] = useState("")
+
+  function showSaved() {
+    setSavedMsg("Saved!")
+    setTimeout(() => setSavedMsg(""), 1500)
+  }
 
   function saveMeds(updated) {
     setMeds(updated)
     localStorage.setItem("meds", JSON.stringify(updated))
-    setSavedMsg("Saved!")
-    setTimeout(() => setSavedMsg(""), 1500)
+    showSaved()
+  }
+
+  function saveCleaning(updated) {
+    setCleaning(updated)
+    localStorage.setItem("cleaning", JSON.stringify(updated))
+    showSaved()
   }
 
   function addMed() {
@@ -42,19 +68,54 @@ function Settings() {
   }
 
   function startEditMed(med) {
-    const timePadded = med.scheduledTime.length === 4 
-      ? "0" + med.scheduledTime 
+    const timePadded = med.scheduledTime.length === 4
+      ? "0" + med.scheduledTime
       : med.scheduledTime
     setEditingMed({ ...med, scheduledTime: timePadded })
   }
 
   function saveEditMed() {
-    saveMeds(meds.map(m => m.id === editingMed.id 
-      ? { ...m, name: editingMed.name, scheduledTime: editingMed.scheduledTime } 
+    saveMeds(meds.map(m => m.id === editingMed.id
+      ? { ...m, name: editingMed.name, scheduledTime: editingMed.scheduledTime }
       : m
     ))
     setEditingMed(null)
   }
+
+  function getCurrentRoomTasks() {
+    const room = cleaning.find(r => r.id === activeRoom)
+    return room ? room.tasks : []
+  }
+
+  function addTask() {
+    if (!newTaskName.trim()) return
+    const newTask = { id: Date.now(), name: newTaskName.trim(), done: false }
+    const roomExists = cleaning.find(r => r.id === activeRoom)
+    let updated
+    if (roomExists) {
+      updated = cleaning.map(r =>
+        r.id === activeRoom
+          ? { ...r, tasks: [...r.tasks, newTask] }
+          : r
+      )
+    } else {
+      const roomInfo = defaultRooms.find(r => r.id === activeRoom)
+      updated = [...cleaning, { ...roomInfo, tasks: [newTask] }]
+    }
+    saveCleaning(updated)
+    setNewTaskName("")
+  }
+
+  function deleteTask(taskId) {
+    const updated = cleaning.map(r =>
+      r.id === activeRoom
+        ? { ...r, tasks: r.tasks.filter(t => t.id !== taskId) }
+        : r
+    )
+    saveCleaning(updated)
+  }
+
+  const currentTasks = getCurrentRoomTasks()
 
   return (
     <div>
@@ -111,6 +172,48 @@ function Settings() {
             onChange={e => setNewMedTime(e.target.value)}
           />
           <button className="save-btn" onClick={addMed}>Add medication</button>
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <div className="journal-section-label">Cleaning tasks</div>
+
+        <div className="room-tabs" style={{ marginBottom: "12px" }}>
+          {defaultRooms.map(room => (
+            <button
+              key={room.id}
+              className={`room-tab ${activeRoom === room.id ? "active" : ""}`}
+              onClick={() => setActiveRoom(room.id)}
+            >
+              {room.name}
+            </button>
+          ))}
+        </div>
+
+        {currentTasks.length === 0 && (
+          <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>
+            No tasks yet for this room.
+          </p>
+        )}
+
+        {currentTasks.map(task => (
+          <div key={task.id} className="settings-card">
+            <div className="settings-row">
+              <div className="settings-name">{task.name}</div>
+              <button className="icon-btn delete" onClick={() => deleteTask(task.id)}>🗑️</button>
+            </div>
+          </div>
+        ))}
+
+        <div className="add-form" style={{ marginTop: "12px" }}>
+          <input
+            className="settings-input"
+            placeholder={`Add task to ${defaultRooms.find(r => r.id === activeRoom)?.name}`}
+            value={newTaskName}
+            onChange={e => setNewTaskName(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && addTask()}
+          />
+          <button className="save-btn" onClick={addTask}>Add task</button>
         </div>
       </div>
 
