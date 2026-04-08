@@ -1,9 +1,5 @@
-import { useState, useEffect } from "react"
-
-const defaultMeds = [
-  { id: 1, name: "Adderall XR 15mg", scheduledTime: "09:30", done: false, takenAt: null },
-  { id: 2, name: "Vraylar 1.5mg", scheduledTime: "09:30", done: false, takenAt: null },
-]
+import { useState, useEffect, useRef } from "react"
+import { defaultMeds } from "./defaults"
 
 function parseScheduledTime(timeStr) {
   const [hours, minutes] = timeStr.split(":").map(Number)
@@ -32,11 +28,15 @@ function Meds() {
   })
 
   const today = new Date().toDateString()
+  const [showCelebration, setShowCelebration] = useState(false)
+  const prevDoneRef = useRef(false)
 
   useEffect(() => {
     const lastReset = localStorage.getItem("medsLastReset")
     if (lastReset !== today) {
-      const reset = defaultMeds.map(med => ({ ...med, done: false, takenAt: null }))
+      const saved = localStorage.getItem("meds")
+      const current = saved ? JSON.parse(saved) : defaultMeds
+      const reset = current.map(med => ({ ...med, done: false, takenAt: null }))
       setMeds(reset)
       localStorage.setItem("meds", JSON.stringify(reset))
       localStorage.setItem("medsLastReset", today)
@@ -46,6 +46,17 @@ function Meds() {
   useEffect(() => {
     localStorage.setItem("meds", JSON.stringify(meds))
   }, [meds])
+
+  const doneCount = meds.filter(m => m.done).length
+  const allDone = doneCount === meds.length && meds.length > 0
+
+  useEffect(() => {
+    if (allDone && !prevDoneRef.current) {
+      setShowCelebration(true)
+      setTimeout(() => setShowCelebration(false), 3000)
+    }
+    prevDoneRef.current = allDone
+  }, [allDone])
 
   function toggleMed(id) {
     setMeds(meds.map(med => {
@@ -58,10 +69,19 @@ function Meds() {
     }))
   }
 
-  const doneCount = meds.filter(m => m.done).length
-
   return (
     <div>
+      {showCelebration && (
+        <div className="celebration">
+          <div className="celebration-text">💊 All meds taken!</div>
+          <div className="confetti-row">
+            {["🎉","✨","⚡","🌿","🎊","✅","💚","🌟"].map((e, i) => (
+              <span key={i} className="confetti-piece" style={{ animationDelay: `${i * 0.1}s` }}>{e}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="progress-row">
         <div className="progress-bar-bg">
           <div
