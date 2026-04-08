@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
 
 const defaultMeds = [
-  { id: 1, name: "Adderall XR 15mg", scheduledTime: "9:30", done: false, takenAt: null },
-  { id: 2, name: "Vraylar 1.5mg", scheduledTime: "9:30", done: false, takenAt: null },
+  { id: 1, name: "Adderall XR 15mg", scheduledTime: "09:30", done: false, takenAt: null },
+  { id: 2, name: "Vraylar 1.5mg", scheduledTime: "09:30", done: false, takenAt: null },
 ]
 
 function parseScheduledTime(timeStr) {

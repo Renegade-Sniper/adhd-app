@@ -79,6 +79,18 @@ function Cleaning() {
     localStorage.setItem("cleaning", JSON.stringify(rooms))
   }, [rooms])
 
+  useEffect(() => {
+    const today = new Date().toDateString()
+    const lastReset = localStorage.getItem("cleaningLastReset")
+    if (lastReset !== today) {
+      setRooms(prev => prev.map(room => ({
+        ...room,
+        tasks: room.tasks.map(task => ({ ...task, done: false }))
+      })))
+      localStorage.setItem("cleaningLastReset", today)
+    }
+  }, [])
+
   function toggleTask(roomId, taskId) {
     setRooms(rooms.map(room =>
       room.id === roomId
