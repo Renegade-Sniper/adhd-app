@@ -6,6 +6,7 @@ import Cleaning from "./Cleaning"
 import Journal from "./Journal"
 import Settings from "./Settings"
 import Weekly from "./Weekly"
+import Points from "./Points"
 
 function App() {
   const [activeTab, setActiveTab] = useState("home")
@@ -22,6 +23,7 @@ function App() {
   <button className={`nav-btn ${activeTab === "meds" ? "active" : ""}`} onClick={() => setActiveTab("meds")}>💊 Meds</button>
   <button className={`nav-btn ${activeTab === "cleaning" ? "active" : ""}`} onClick={() => setActiveTab("cleaning")}>🧹 Clean</button>
   <button className={`nav-btn ${activeTab === "journal" ? "active" : ""}`} onClick={() => setActiveTab("journal")}>📓 Journal</button>
+  <button className={`nav-btn ${activeTab === "points" ? "active" : ""}`} onClick={() => setActiveTab("points")}>⭐ Points</button>
   <button className={`nav-btn ${activeTab === "weekly" ? "active" : ""}`} onClick={() => setActiveTab("weekly")}>📊 Weekly</button>
   <button className={`nav-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
 </nav>
@@ -32,6 +34,7 @@ function App() {
         {activeTab === "journal" && <Journal />}
         {activeTab === "settings" && <Settings />}
         {activeTab === "weekly" && <Weekly />}
+        {activeTab === "points" && <Points />}
       </main>
     </div>
   )
