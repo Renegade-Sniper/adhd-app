@@ -39,6 +39,11 @@ function getCleaningSummary() {
   return { done, total }
 }
 
+function getPointsBalance() {
+  const history = JSON.parse(localStorage.getItem("pointsHistory") || "[]")
+  return history.reduce((sum, entry) => sum + entry.amount, 0)
+}
+
 function getJournalSummary() {
   const saved = localStorage.getItem("journalNote")
   const parsed = saved ? JSON.parse(saved) : null
@@ -169,16 +174,24 @@ function Home({ setActiveTab }) {
       </div>
 
       <div className="summary-grid">
-        <div className="summary-card" onClick={() => setActiveTab("meds")}>
-          <div className="summary-icon">💊</div>
-          <div className="summary-info">
-            <div className="summary-title">Meds</div>
-            <div className="summary-stat">{meds.total === 0 ? "No meds" : `${meds.done}/${meds.total} taken`}</div>
-          </div>
-          <div className={`summary-status ${meds.done === meds.total && meds.total > 0 ? "done" : "pending"}`}>
-            {meds.done === meds.total && meds.total > 0 ? "✓" : "→"}
-          </div>
-        </div>
+  <div className="summary-card" onClick={() => setActiveTab("points")}>
+    <div className="summary-icon">⭐</div>
+    <div className="summary-info">
+      <div className="summary-title">Points</div>
+      <div className="summary-stat">{getPointsBalance()} available</div>
+    </div>
+    <div className="summary-status pending">→</div>
+  </div>
+  <div className="summary-card" onClick={() => setActiveTab("meds")}>
+    <div className="summary-icon">💊</div>
+    <div className="summary-info">
+      <div className="summary-title">Meds</div>
+      <div className="summary-stat">{meds.total === 0 ? "No meds" : `${meds.done}/${meds.total} taken`}</div>
+    </div>
+    <div className={`summary-status ${meds.done === meds.total && meds.total > 0 ? "done" : "pending"}`}>
+      {meds.done === meds.total && meds.total > 0 ? "✓" : "→"}
+    </div>
+  </div>
 
         <div className="summary-card" onClick={() => setActiveTab("cleaning")}>
           <div className="summary-icon">🧹</div>

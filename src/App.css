@@ -1,3 +1,6 @@
+body.dark {
+  background: #0f1115;
+}
 :root {
   --primary: #0F766E;
   --primary-light: #14B8A6;
@@ -881,4 +884,153 @@ body {
 
 .history-amount.negative {
   color: #F59E0B;
+}
+.app.dark {
+  background: #0f1115;
+  color: #f1f1f1;
+}
+
+.app.dark .app-header {
+  background: #085041;
+}
+
+.app.dark .app-nav {
+  background: #1a1d23;
+  border-bottom-color: #2a2d33;
+}
+
+.app.dark .nav-btn {
+  color: #888;
+}
+
+.app.dark .nav-btn.active {
+  color: #14B8A6;
+  border-bottom-color: #14B8A6;
+}
+
+.app.dark .app-content {
+  background: #0f1115;
+}
+
+.app.dark .task-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .task-name {
+  color: #f1f1f1;
+}
+
+.app.dark .task-meta {
+  color: #888;
+}
+
+.app.dark .summary-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .summary-title {
+  color: #f1f1f1;
+}
+
+.app.dark .summary-stat {
+  color: #888;
+}
+
+.app.dark .note-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .note-text {
+  color: #ccc;
+}
+
+.app.dark .settings-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .settings-name {
+  color: #f1f1f1;
+}
+
+.app.dark .settings-input {
+  background: #1a1d23;
+  border-color: #2a2d33;
+  color: #f1f1f1;
+}
+
+.app.dark .room-tab {
+  border-color: #2a2d33;
+  color: #888;
+  background: #1a1d23;
+}
+
+.app.dark .room-tab.active {
+  background: #14B8A6;
+  border-color: #14B8A6;
+  color: white;
+}
+
+.app.dark .reward-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .reward-name {
+  color: #f1f1f1;
+}
+
+.app.dark .history-entry {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .history-desc {
+  color: #f1f1f1;
+}
+
+.app.dark .score-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .score-label {
+  color: #f1f1f1;
+}
+
+.app.dark .journal-input {
+  background: #1a1d23;
+  border-color: #2a2d33;
+  color: #f1f1f1;
+}
+
+.app.dark .home-greeting {
+  color: #f1f1f1;
+}
+
+.app.dark .catchup-form {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .date-input {
+  background: #1a1d23;
+  border-color: #2a2d33;
+  color: #f1f1f1;
+}
+
+.app.dark .insight-card {
+  opacity: 0.9;
+}
+
+.app.dark .add-reward-form {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .progress-bar-bg {
+  background: #2a2d33;
 }

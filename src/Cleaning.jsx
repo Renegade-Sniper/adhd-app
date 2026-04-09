@@ -70,9 +70,18 @@ const defaultRooms = [
 
 function Cleaning() {
   const [activeRoom, setActiveRoom] = useState("kitchen")
-  const [rooms, setRooms] = useState(() => {
+ const [rooms, setRooms] = useState(() => {
     const saved = localStorage.getItem("cleaning")
-    return saved ? JSON.parse(saved) : defaultRooms
+    const customRooms = JSON.parse(localStorage.getItem("customRooms") || "null")
+    const roomList = customRooms || defaultRooms
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      return roomList.map(room => {
+        const existing = parsed.find(r => r.id === room.id)
+        return existing || { ...room, tasks: [] }
+      })
+    }
+    return roomList.map(room => ({ ...room, tasks: [] }))
   })
 
   useEffect(() => {

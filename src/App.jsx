@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "./App.css"
 import Home from "./Home"
 import Meds from "./Meds"
@@ -10,9 +10,17 @@ import Points from "./points"
 
 function App() {
   const [activeTab, setActiveTab] = useState("home")
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true"
+  })
+
+ useEffect(() => {
+    localStorage.setItem("darkMode", darkMode)
+    document.body.classList.toggle("dark", darkMode)
+  }, [darkMode])
 
   return (
-    <div className="app">
+    <div className={`app ${darkMode ? "dark" : ""}`}>
       <header className="app-header">
         <h1>Hey, you showed up</h1>
         <p className="app-date">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
@@ -26,6 +34,9 @@ function App() {
   <button className={`nav-btn ${activeTab === "points" ? "active" : ""}`} onClick={() => setActiveTab("points")}>⭐ Points</button>
   <button className={`nav-btn ${activeTab === "weekly" ? "active" : ""}`} onClick={() => setActiveTab("weekly")}>📊 Weekly</button>
   <button className={`nav-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
+  <button className="nav-btn" onClick={() => setDarkMode(d => !d)}>
+  {darkMode ? "☀️ Light" : "🌙 Dark"}
+</button>
 </nav>
       <main className="app-content">
         {activeTab === "home" && <Home setActiveTab={setActiveTab} />}

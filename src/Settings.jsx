@@ -14,6 +14,11 @@ const defaultRooms = [
   { id: "car", name: "Car/Garage" },
 ]
 
+function getRooms() {
+  const saved = localStorage.getItem("customRooms")
+  return saved ? JSON.parse(saved) : defaultRooms
+}
+
 function Settings() {
   const [meds, setMeds] = useState(() => {
     const saved = localStorage.getItem("meds")
@@ -25,7 +30,10 @@ function Settings() {
     return saved ? JSON.parse(saved) : []
   })
 
-  const [activeRoom, setActiveRoom] = useState("kitchen")
+  const [rooms, setRooms] = useState(() => getRooms())
+const [activeRoom, setActiveRoom] = useState(rooms[0]?.id || "kitchen")
+const [newRoomName, setNewRoomName] = useState("")
+const [showAddRoom, setShowAddRoom] = useState(false)
   const [newMedName, setNewMedName] = useState("")
   const [newMedTime, setNewMedTime] = useState("09:30")
   const [newTaskName, setNewTaskName] = useState("")
@@ -48,6 +56,27 @@ function Settings() {
     localStorage.setItem("cleaning", JSON.stringify(updated))
     showSaved()
   }
+
+  function addRoom() {
+  if (!newRoomName.trim()) return
+  const id = newRoomName.trim().toLowerCase().replace(/\s+/g, "")
+  const newRoom = { id, name: newRoomName.trim() }
+  const updatedRooms = [...rooms, newRoom]
+  setRooms(updatedRooms)
+  localStorage.setItem("customRooms", JSON.stringify(updatedRooms))
+  setActiveRoom(id)
+  setNewRoomName("")
+  setShowAddRoom(false)
+}
+
+function deleteRoom(roomId) {
+  const updatedRooms = rooms.filter(r => r.id !== roomId)
+  setRooms(updatedRooms)
+  localStorage.setItem("customRooms", JSON.stringify(updatedRooms))
+  const updatedCleaning = cleaning.filter(r => r.id !== roomId)
+  saveCleaning(updatedCleaning)
+  setActiveRoom(updatedRooms[0]?.id || "kitchen")
+}
 
   function addMed() {
     if (!newMedName.trim()) return
@@ -178,18 +207,47 @@ function Settings() {
       <div className="settings-section">
         <div className="journal-section-label">Cleaning tasks</div>
 
-        <div className="room-tabs" style={{ marginBottom: "12px" }}>
-          {defaultRooms.map(room => (
-            <button
-              key={room.id}
-              className={`room-tab ${activeRoom === room.id ? "active" : ""}`}
-              onClick={() => setActiveRoom(room.id)}
-            >
-              {room.name}
-            </button>
-          ))}
-        </div>
+       <div className="room-tabs" style={{ marginBottom: "12px" }}>
+  {rooms.map(room => (
+    <button
+      key={room.id}
+      className={`room-tab ${activeRoom === room.id ? "active" : ""}`}
+      onClick={() => setActiveRoom(room.id)}
+    >
+      {room.name}
+    </button>
+  ))}
+</div>
 
+<div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+  {showAddRoom ? (
+    <>
+      <input
+        className="settings-input"
+        placeholder="Room name"
+        value={newRoomName}
+        onChange={e => setNewRoomName(e.target.value)}
+        style={{ marginBottom: 0 }}
+      />
+      <button className="settings-btn save" style={{ whiteSpace: "nowrap" }} onClick={addRoom}>Add</button>
+      <button className="settings-btn cancel" onClick={() => setShowAddRoom(false)}>Cancel</button>
+    </>
+  ) : (
+    <button className="add-btn" style={{ width: "100%" }} onClick={() => setShowAddRoom(true)}>
+      + add room
+    </button>
+  )}
+</div>
+
+{activeRoom && !defaultRooms.find(r => r.id === activeRoom) && (
+  <button
+    className="icon-btn delete"
+    style={{ marginBottom: "12px", fontSize: "13px", color: "#888" }}
+    onClick={() => deleteRoom(activeRoom)}
+  >
+    🗑️ Delete this room
+  </button>
+)}
         {currentTasks.length === 0 && (
           <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>
             No tasks yet for this room.
