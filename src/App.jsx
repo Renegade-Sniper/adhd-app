@@ -6,7 +6,7 @@ import Cleaning from "./Cleaning"
 import Journal from "./Journal"
 import Settings from "./Settings"
 import Weekly from "./Weekly"
-import Points from "./Points"
+import Points from "./points"
 
 function App() {
   const [activeTab, setActiveTab] = useState("home")
