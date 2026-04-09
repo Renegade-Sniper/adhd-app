@@ -28,11 +28,10 @@ function App() {
 
      <nav className="app-nav">
   <button className={`nav-btn ${activeTab === "home" ? "active" : ""}`} onClick={() => setActiveTab("home")}>🏠 Home</button>
-  <button className={`nav-btn ${activeTab === "meds" ? "active" : ""}`} onClick={() => setActiveTab("meds")}>💊 Meds</button>
+ <button className={`nav-btn ${activeTab === "meds" ? "active" : ""}`} onClick={() => setActiveTab("meds")}>💚 Self Care</button>
   <button className={`nav-btn ${activeTab === "cleaning" ? "active" : ""}`} onClick={() => setActiveTab("cleaning")}>🧹 Clean</button>
-  <button className={`nav-btn ${activeTab === "journal" ? "active" : ""}`} onClick={() => setActiveTab("journal")}>📓 Journal</button>
+<button className={`nav-btn ${activeTab === "journal" ? "active" : ""}`} onClick={() => setActiveTab("journal")}>📊 Insights</button>
   <button className={`nav-btn ${activeTab === "points" ? "active" : ""}`} onClick={() => setActiveTab("points")}>⭐ Points</button>
-  <button className={`nav-btn ${activeTab === "weekly" ? "active" : ""}`} onClick={() => setActiveTab("weekly")}>📊 Weekly</button>
   <button className={`nav-btn ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
   <button className="nav-btn" onClick={() => setDarkMode(d => !d)}>
   {darkMode ? "☀️ Light" : "🌙 Dark"}

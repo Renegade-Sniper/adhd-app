@@ -1034,3 +1034,62 @@ body {
 .app.dark .progress-bar-bg {
   background: #2a2d33;
 }
+
+.section-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.section-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 0.5px solid #e5e5e5;
+  background: none;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.section-tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.app.dark .section-tab {
+  border-color: #2a2d33;
+  color: #888;
+  background: #1a1d23;
+}
+
+.app.dark .section-tab.active {
+  background: var(--primary);
+  color: white;
+}
+.toggle-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.toggle-btn.on {
+  background: var(--primary-light);
+  color: white;
+}
+
+.toggle-btn.off {
+  background: #f3f4f6;
+  color: #888;
+}
+```
+
+Save with **Ctrl+S**. Now create a new file in **src** called:
+```
+notifications.js

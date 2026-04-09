@@ -20,6 +20,26 @@ function getRooms() {
 }
 
 function Settings() {
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    return localStorage.getItem("notificationsEnabled") === "true"
+  })
+
+  async function enableNotifications() {
+    const permission = await Notification.requestPermission()
+    if (permission === "granted") {
+      setNotificationsEnabled(true)
+      localStorage.setItem("notificationsEnabled", "true")
+      showSaved()
+    } else {
+      alert("Notifications blocked — please enable them in your browser settings.")
+    }
+  }
+
+  function disableNotifications() {
+    setNotificationsEnabled(false)
+    localStorage.setItem("notificationsEnabled", "false")
+    showSaved()
+  }
   const [meds, setMeds] = useState(() => {
     const saved = localStorage.getItem("meds")
     return saved ? JSON.parse(saved) : defaultMeds
@@ -33,6 +53,10 @@ function Settings() {
   const [rooms, setRooms] = useState(() => getRooms())
 const [activeRoom, setActiveRoom] = useState(rooms[0]?.id || "kitchen")
 const [newRoomName, setNewRoomName] = useState("")
+const [hygiene, setHygiene] = useState(() => {
+    return JSON.parse(localStorage.getItem("hygiene") || "[]")
+  })
+const [newHygieneName, setNewHygieneName] = useState("")
 const [showAddRoom, setShowAddRoom] = useState(false)
   const [newMedName, setNewMedName] = useState("")
   const [newMedTime, setNewMedTime] = useState("09:30")
@@ -77,6 +101,23 @@ function deleteRoom(roomId) {
   saveCleaning(updatedCleaning)
   setActiveRoom(updatedRooms[0]?.id || "kitchen")
 }
+
+function addHygiene() {
+    if (!newHygieneName.trim()) return
+    const newItem = { id: Date.now(), name: newHygieneName.trim(), done: false }
+    const updated = [...hygiene, newItem]
+    setHygiene(updated)
+    localStorage.setItem("hygiene", JSON.stringify(updated))
+    setNewHygieneName("")
+    showSaved()
+  }
+
+  function deleteHygiene(id) {
+    const updated = hygiene.filter(h => h.id !== id)
+    setHygiene(updated)
+    localStorage.setItem("hygiene", JSON.stringify(updated))
+    showSaved()
+  }
 
   function addMed() {
     if (!newMedName.trim()) return
@@ -150,7 +191,25 @@ function deleteRoom(roomId) {
     <div>
       <div className="settings-section">
         <div className="journal-section-label">Medications</div>
-
+<div className="settings-section">
+  <div className="journal-section-label">Medication reminders</div>
+  <div className="settings-card">
+    <div className="settings-row">
+      <div className="settings-info">
+        <div className="settings-name">Browser notifications</div>
+        <div className="settings-meta">
+          {notificationsEnabled ? "Reminders are on" : "Get reminded when meds are due"}
+        </div>
+      </div>
+      <button
+        className={`toggle-btn ${notificationsEnabled ? "on" : "off"}`}
+        onClick={notificationsEnabled ? disableNotifications : enableNotifications}
+      >
+        {notificationsEnabled ? "On" : "Off"}
+      </button>
+    </div>
+  </div>
+</div>
         {meds.map(med => (
           <div key={med.id} className="settings-card">
             {editingMed && editingMed.id === med.id ? (
@@ -274,6 +333,30 @@ function deleteRoom(roomId) {
           <button className="save-btn" onClick={addTask}>Add task</button>
         </div>
       </div>
+
+<div className="settings-section">
+  <div className="journal-section-label">Hygiene tasks</div>
+
+  {hygiene.map(item => (
+    <div key={item.id} className="settings-card">
+      <div className="settings-row">
+        <div className="settings-name">{item.name}</div>
+        <button className="icon-btn delete" onClick={() => deleteHygiene(item.id)}>🗑️</button>
+      </div>
+    </div>
+  ))}
+
+  <div className="add-form" style={{ marginTop: "12px" }}>
+    <input
+      className="settings-input"
+      placeholder="Add hygiene task"
+      value={newHygieneName}
+      onChange={e => setNewHygieneName(e.target.value)}
+      onKeyDown={e => e.key === "Enter" && addHygiene()}
+    />
+    <button className="save-btn" onClick={addHygiene}>Add task</button>
+  </div>
+</div>
 
       {savedMsg && <div className="saved-toast">{savedMsg}</div>}
     </div>
