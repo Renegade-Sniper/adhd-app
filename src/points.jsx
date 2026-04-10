@@ -65,7 +65,13 @@ function Points() {
         breakdown.push(`${room.name}: +1pt`)
       }
     })
-
+const hygiene = JSON.parse(localStorage.getItem("hygiene") || "[]")
+    const hygieneDone = hygiene.filter(h => h.done).length
+    const hygienePoints = Math.min(hygieneDone, 3)
+    if (hygienePoints > 0) {
+      earned += hygienePoints
+      breakdown.push(`Hygiene: +${hygienePoints}pt${hygienePoints > 1 ? "s" : ""}`)
+    }
     if (earned > 0) {
       const entry = {
         id: Date.now(),
