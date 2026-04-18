@@ -32,6 +32,80 @@ function formatTime(isoString) {
   return new Date(isoString).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 }
 
+function CatchUpMeds({ meds }) {
+  const [show, setShow] = useState(false)
+  const [selectedMed, setSelectedMed] = useState("")
+  const [selectedDate, setSelectedDate] = useState("")
+  const [selectedTime, setSelectedTime] = useState("09:30")
+  const [saved, setSaved] = useState(false)
+
+  function handleSave() {
+    if (!selectedMed || !selectedDate) return
+    const history = JSON.parse(localStorage.getItem("medsHistory") || "[]")
+    const entry = {
+      id: Date.now(),
+      date: new Date(selectedDate + "T12:00:00").toDateString(),
+      medId: selectedMed,
+      takenAt: new Date(selectedDate + "T" + selectedTime).toISOString(),
+    }
+    localStorage.setItem("medsHistory", JSON.stringify([entry, ...history]))
+    setSaved(true)
+    setTimeout(() => {
+      setSaved(false)
+      setShow(false)
+      setSelectedMed("")
+      setSelectedDate("")
+      setSelectedTime("09:30")
+    }, 1500)
+  }
+
+  if (!show) return (
+    <button className="catchup-btn" onClick={() => setShow(true)}>
+      📅 Log a previous dose
+    </button>
+  )
+
+  return (
+    <div className="catchup-form">
+      <div className="journal-section-label">Which medication?</div>
+      <select
+        className="settings-input"
+        value={selectedMed}
+        onChange={e => setSelectedMed(e.target.value)}
+      >
+        <option value="">Select a medication...</option>
+        {meds.map(med => (
+          <option key={med.id} value={med.id}>{med.name}</option>
+        ))}
+      </select>
+
+      <div className="journal-section-label" style={{ marginTop: "12px" }}>Which day?</div>
+      <input
+        type="date"
+        className="settings-input"
+        value={selectedDate}
+        max={new Date().toISOString().split("T")[0]}
+        onChange={e => setSelectedDate(e.target.value)}
+      />
+
+      <div className="journal-section-label" style={{ marginTop: "12px" }}>What time did you take it?</div>
+      <input
+        type="time"
+        className="settings-input"
+        value={selectedTime}
+        onChange={e => setSelectedTime(e.target.value)}
+      />
+
+      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+        <button className="settings-btn save" onClick={handleSave}>
+          {saved ? "Saved ✓" : "Save"}
+        </button>
+        <button className="settings-btn cancel" onClick={() => setShow(false)}>Cancel</button>
+      </div>
+    </div>
+  )
+}
+
 function Meds() {
   const today = new Date().toDateString()
 
@@ -60,6 +134,7 @@ function Meds() {
       localStorage.setItem("medsLastReset", today)
     }
   }, [])
+
   useEffect(() => {
     scheduleMedReminders(meds)
   }, [])
@@ -184,6 +259,10 @@ function Meds() {
               </div>
             )
           })}
+
+          <div style={{ marginTop: "16px" }}>
+            <CatchUpMeds meds={meds} />
+          </div>
         </div>
       )}
 
