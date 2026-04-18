@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react"
 import Weekly from "./Weekly"
+import { NotebookPen, TrendingUp, Smile, Zap, Sparkles, BedDouble, Carrot } from "lucide-react"
 
 const defaultScores = { mood: 5, energy: 5, focus: 5, sleep: 5, appetite: 5 }
 
 const sliders = [
-  { id: "mood", label: "Mood", emoji: "🙂" },
-  { id: "energy", label: "Energy", emoji: "⚡" },
-  { id: "focus", label: "Focus", emoji: "🎯" },
-  { id: "sleep", label: "Sleep quality", emoji: "😴" },
-  { id: "appetite", label: "Appetite", emoji: "🍽️" },
+  { id: "mood", label: "Mood", icon: <Smile size={16} /> },
+  { id: "energy", label: "Energy", icon: <Zap size={16} /> },
+  { id: "focus", label: "Focus", icon: <Sparkles size={16} /> },
+  { id: "sleep", label: "Sleep quality", icon: <BedDouble size={16} /> },
+  { id: "appetite", label: "Appetite", icon: <Carrot size={16} /> },
 ]
 
 function Journal() {
@@ -59,17 +60,17 @@ function Journal() {
     <div>
       <div className="section-tabs">
         <button
-          className={`section-tab ${activeSection === "checkin" ? "active" : ""}`}
-          onClick={() => setActiveSection("checkin")}
-        >
-          📝 Check in
-        </button>
-        <button
-          className={`section-tab ${activeSection === "review" ? "active" : ""}`}
-          onClick={() => setActiveSection("review")}
-        >
-          📊 Review
-        </button>
+  className={`section-tab ${activeSection === "checkin" ? "active" : ""}`}
+  onClick={() => setActiveSection("checkin")}
+>
+  <NotebookPen size={16} /> Check in
+</button>
+<button
+  className={`section-tab ${activeSection === "review" ? "active" : ""}`}
+  onClick={() => setActiveSection("review")}
+>
+  <TrendingUp size={16} /> Review
+</button>
       </div>
 
       {activeSection === "checkin" && (
@@ -79,7 +80,7 @@ function Journal() {
           {sliders.map(slider => (
             <div key={slider.id} className="slider-row">
               <div className="slider-header">
-                <span className="slider-label">{slider.emoji} {slider.label}</span>
+                <span className="slider-label" style={{ display: "flex", alignItems: "center", gap: "6px" }}>{slider.icon} {slider.label}</span>
                 <span className="slider-value">{scores[slider.id]}/10</span>
               </div>
               <input
@@ -118,9 +119,9 @@ function Journal() {
                   <div className="note-date">{entry.date}</div>
                   <div className="note-scores">
                     {sliders.map(s => (
-                      <span key={s.id} className="note-score-pill">
-                        {s.emoji} {entry.scores[s.id]}
-                      </span>
+                      <span key={s.id} className="note-score-pill" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+  {s.icon} {entry.scores[s.id]}
+</span>
                     ))}
                   </div>
                   {entry.note && <div className="note-text">{entry.note}</div>}

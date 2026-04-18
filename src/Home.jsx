@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Flame, PillBottle, BrushCleaning, BookOpen, Star, Check, Clock, Sparkles, Smile, Zap } from "lucide-react"
 
 function getGreeting() {
   const hour = new Date().getHours()
@@ -170,12 +171,12 @@ function Home({ setActiveTab }) {
     <div>
       <div className="home-greeting">
         <span>{getGreeting()}</span>
-        {streak > 0 && <span className="streak-pill">⚡ {streak} day streak</span>}
+        {streak > 0 && <span className="streak-pill"><Flame size={14} /> {streak} day streak</span>}
       </div>
 
       <div className="summary-grid">
   <div className="summary-card" onClick={() => setActiveTab("points")}>
-    <div className="summary-icon">⭐</div>
+    <div className="summary-icon"><Star size={22} /></div>
     <div className="summary-info">
       <div className="summary-title">Points</div>
       <div className="summary-stat">{getPointsBalance()} available</div>
@@ -183,7 +184,7 @@ function Home({ setActiveTab }) {
     <div className="summary-status pending">→</div>
   </div>
   <div className="summary-card" onClick={() => setActiveTab("meds")}>
-    <div className="summary-icon">💊</div>
+    <div className="summary-icon"><PillBottle size={22} /></div>
     <div className="summary-info">
       <div className="summary-title">Meds</div>
       <div className="summary-stat">{meds.total === 0 ? "No meds" : `${meds.done}/${meds.total} taken`}</div>
@@ -194,7 +195,7 @@ function Home({ setActiveTab }) {
   </div>
 
         <div className="summary-card" onClick={() => setActiveTab("cleaning")}>
-          <div className="summary-icon">🧹</div>
+          <div className="summary-icon"><BrushCleaning size={22} /></div>
           <div className="summary-info">
             <div className="summary-title">Cleaning</div>
             <div className="summary-stat">{cleaning.done}/{cleaning.total} tasks</div>
@@ -205,7 +206,7 @@ function Home({ setActiveTab }) {
         </div>
 
         <div className="summary-card" onClick={() => setActiveTab("journal")}>
-          <div className="summary-icon">📓</div>
+          <div className="summary-icon"><BookOpen size={22} /></div>
           <div className="summary-info">
             <div className="summary-title">Journal</div>
             <div className="summary-stat">{journaled ? "Entry saved" : "Not yet today"}</div>

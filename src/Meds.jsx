@@ -1,6 +1,7 @@
 import { scheduleMedReminders } from "./notifications"
 import { useState, useEffect, useRef } from "react"
 import { defaultMeds } from "./defaults"
+import { PillBottle, Droplets, CheckCircle2 } from "lucide-react"
 
 const defaultHygiene = [
   { id: "shower", name: "Shower/bath", done: false },
@@ -196,13 +197,13 @@ function Meds() {
           className={`section-tab ${activeSection === "meds" ? "active" : ""}`}
           onClick={() => setActiveSection("meds")}
         >
-          💊 Medications
+          <PillBottle size={16} /> Medications
         </button>
         <button
           className={`section-tab ${activeSection === "hygiene" ? "active" : ""}`}
           onClick={() => setActiveSection("hygiene")}
         >
-          🧼 Hygiene
+          <Droplets size={16} /> Hygiene
         </button>
       </div>
 
@@ -240,7 +241,7 @@ function Meds() {
                 onClick={() => toggleMed(med.id)}
               >
                 <div className={`check-circle ${med.done ? "checked" : ""}`}>
-                  {med.done && "✓"}
+                  {med.done && <CheckCircle2 size={14} />}
                 </div>
                 <div className="task-info">
                   <div className={`task-name ${med.done ? "strikethrough" : ""}`}>{med.name}</div>
@@ -285,7 +286,7 @@ function Meds() {
               onClick={() => toggleHygiene(item.id)}
             >
               <div className={`check-circle ${item.done ? "checked" : ""}`}>
-                {item.done && "✓"}
+                {item.done && <CheckCircle2 size={14} />}
               </div>
               <div className="task-info">
                 <div className={`task-name ${item.done ? "strikethrough" : ""}`}>{item.name}</div>
