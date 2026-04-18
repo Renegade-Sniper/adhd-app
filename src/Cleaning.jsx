@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 
 const defaultRooms = [
   {
@@ -68,6 +68,15 @@ const defaultRooms = [
   },
 ]
 
+function CleaningErrorFallback({ onReset }) {
+  return (
+    <div style={{ padding: "20px", textAlign: "center" }}>
+      <p style={{ color: "#888", marginBottom: "16px" }}>Something went wrong loading your cleaning tasks.</p>
+      <button className="save-btn" onClick={onReset}>Reset cleaning data</button>
+    </div>
+  )
+}
+
 function Cleaning() {
   const [rooms, setRooms] = useState(() => {
     try {
@@ -88,6 +97,17 @@ function Cleaning() {
     } catch (e) {
       localStorage.removeItem("cleaning")
       return defaultRooms.map(room => ({ ...room, tasks: [] }))
+    }
+  })
+
+  const [activeRoom, setActiveRoom] = useState(() => {
+    try {
+      const saved = localStorage.getItem("cleaning")
+      const customRooms = JSON.parse(localStorage.getItem("customRooms") || "null")
+      const roomList = customRooms || defaultRooms
+      return roomList[0]?.id || "kitchen"
+    } catch (e) {
+      return "kitchen"
     }
   })
 
@@ -117,7 +137,8 @@ function Cleaning() {
     ))
   }
 
-  const currentRoom = rooms.find(room => room.id === activeRoom)
+  const currentRoom = rooms.find(room => room.id === activeRoom) || rooms[0]
+  if (!currentRoom) return null
   const doneCount = currentRoom.tasks.filter(t => t.done).length
 
   return (
@@ -138,13 +159,18 @@ function Cleaning() {
         <div className="progress-bar-bg">
           <div
             className="progress-bar-fill"
-            style={{ width: `${Math.round((doneCount / currentRoom.tasks.length) * 100)}%` }}
+            style={{ width: currentRoom.tasks.length > 0 ? `${Math.round((doneCount / currentRoom.tasks.length) * 100)}%` : "0%" }}
           />
         </div>
         <span className="progress-label">{doneCount}/{currentRoom.tasks.length}</span>
       </div>
 
       <div className="room-tasks">
+        {currentRoom.tasks.length === 0 && (
+          <p style={{ fontSize: "14px", color: "#888", textAlign: "center", marginTop: "20px" }}>
+            No tasks yet — add some in Settings!
+          </p>
+        )}
         {currentRoom.tasks.map(task => (
           <div
             key={task.id}
@@ -164,4 +190,28 @@ function Cleaning() {
   )
 }
 
-export default Cleaning
+class CleaningBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { error: true }
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <CleaningErrorFallback onReset={() => {
+          localStorage.removeItem("cleaning")
+          localStorage.removeItem("customRooms")
+          this.setState({ error: false })
+        }} />
+      )
+    }
+    return <Cleaning {...this.props} />
+  }
+}
+
+export default CleaningBoundary
