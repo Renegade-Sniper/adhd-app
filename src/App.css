@@ -1023,7 +1023,65 @@ body {
 }
 
 .app.dark .insight-card {
-  opacity: 0.9;
+  opacity: 1;
+}
+
+.app.dark .tone-good {
+  background: #064e3b;
+}
+
+.app.dark .tone-good .insight-text {
+  color: #6ee7b7;
+}
+
+.app.dark .tone-neutral {
+  background: #1e1b4b;
+}
+
+.app.dark .tone-neutral .insight-text {
+  color: #a5b4fc;
+}
+
+.app.dark .tone-nudge {
+  background: #78350f;
+}
+
+.app.dark .tone-nudge .insight-text {
+  color: #fde68a;
+}
+
+.app.dark .dot-partial {
+  background: #78350f;
+  color: #fde68a;
+}
+
+.app.dark .note-card {
+  background: #1a1d23;
+  border-color: #2a2d33;
+}
+
+.app.dark .note-date {
+  color: #666;
+}
+
+.app.dark .note-score-pill {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+
+.app.dark .streak-pill {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+
+.app.dark .summary-status.pending {
+  background: #2a2d33;
+  color: #888;
+}
+
+.app.dark .summary-status.done {
+  background: #064e3b;
+  color: #6ee7b7;
 }
 
 .app.dark .add-reward-form {
@@ -1086,5 +1144,21 @@ body {
 
 .toggle-btn.off {
   background: #f3f4f6;
+  color: #888;
+}
+
+.app.dark .slider-label {
+  color: #f1f1f1;
+}
+
+.app.dark .slider-value {
+  color: #14B8A6;
+}
+
+.app.dark .slider-ends {
+  color: #666;
+}
+
+.app.dark .journal-section-label {
   color: #888;
 }
