@@ -1,12 +1,5 @@
 import { useState } from "react"
-import { Flame, PillBottle, BrushCleaning, BookOpen, Star, Check, Clock, Sparkles, Smile, Zap } from "lucide-react"
-
-function getGreeting() {
-  const hour = new Date().getHours()
-  if (hour < 12) return "Good morning"
-  if (hour < 17) return "Good afternoon"
-  return "Good evening"
-}
+import { Flame, PillBottle, BrushCleaning, BookOpen, Star, Check, Clock, Sparkles, Smile, Zap, CalendarDays } from "lucide-react"
 
 function getStreak() {
   const entries = JSON.parse(localStorage.getItem("journalEntries") || "[]")
@@ -16,12 +9,8 @@ function getStreak() {
   for (let i = 0; i < 30; i++) {
     const checkDate = new Date(today)
     checkDate.setDate(today.getDate() - i)
-    const dateStr = checkDate.toDateString()
-    if (entries.find(e => e.date === dateStr)) {
-      streak++
-    } else {
-      break
-    }
+    if (entries.find(e => e.date === checkDate.toDateString())) streak++
+    else break
   }
   return streak
 }
@@ -63,10 +52,10 @@ function getMedsInsights() {
   })
   const allDone = meds.every(m => m.done)
   const noneDone = meds.every(m => !m.done)
-  if (allDone && onTime) insights.push({ icon: "✓", text: "All meds taken on time today", tone: "good" })
-  else if (allDone && !onTime) insights.push({ icon: "⏱", text: "All meds taken, though a bit late today", tone: "neutral" })
-  else if (!noneDone) insights.push({ icon: "💊", text: `${meds.filter(m => m.done).length} of ${meds.length} meds taken today`, tone: "neutral" })
-  else insights.push({ icon: "💊", text: "Don't forget your meds today", tone: "nudge" })
+  if (allDone && onTime) insights.push({ icon: <Check size={16} />, text: "All meds taken on time today", tone: "good" })
+  else if (allDone && !onTime) insights.push({ icon: <Clock size={16} />, text: "All meds taken, though a bit late today", tone: "neutral" })
+  else if (!noneDone) insights.push({ icon: <PillBottle size={16} />, text: `${meds.filter(m => m.done).length} of ${meds.length} meds taken today`, tone: "neutral" })
+  else insights.push({ icon: <PillBottle size={16} />, text: "Don't forget your meds today", tone: "nudge" })
   return insights
 }
 
@@ -83,18 +72,15 @@ function getCleaningInsights() {
     })
   })
 
-  const topTasks = Object.entries(taskCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 2)
-
+  const topTasks = Object.entries(taskCounts).sort((a, b) => b[1] - a[1]).slice(0, 2)
   if (topTasks.length > 0) {
-    insights.push({ icon: "🧹", text: `You've been crushing "${topTasks[0][0]}" this week`, tone: "good" })
+    insights.push({ icon: <BrushCleaning size={16} />, text: `You've been crushing "${topTasks[0][0]}" this week`, tone: "good" })
   }
 
   const current = rooms.flatMap(r => r.tasks)
   const doneToday = current.filter(t => t.done).length
   if (doneToday > 0) {
-    insights.push({ icon: "⚡", text: `${doneToday} cleaning task${doneToday > 1 ? "s" : ""} done today`, tone: "good" })
+    insights.push({ icon: <Sparkles size={16} />, text: `${doneToday} cleaning task${doneToday > 1 ? "s" : ""} done today`, tone: "good" })
   }
 
   return insights
@@ -117,15 +103,15 @@ function getJournalInsights() {
 
   if (mood !== null) {
     const tone = mood >= 7 ? "good" : mood >= 5 ? "neutral" : "nudge"
-    insights.push({ icon: "🙂", text: `Average mood this week: ${mood}/10`, tone })
+    insights.push({ icon: <Smile size={16} />, text: `Average mood this week: ${mood}/10`, tone })
   }
   if (energy !== null) {
     const tone = energy >= 7 ? "good" : energy >= 5 ? "neutral" : "nudge"
-    insights.push({ icon: "⚡", text: `Average energy this week: ${energy}/10`, tone })
+    insights.push({ icon: <Zap size={16} />, text: `Average energy this week: ${energy}/10`, tone })
   }
   if (focus !== null) {
     const tone = focus >= 7 ? "good" : focus >= 5 ? "neutral" : "nudge"
-    insights.push({ icon: "🎯", text: `Average focus this week: ${focus}/10`, tone })
+    insights.push({ icon: <Sparkles size={16} />, text: `Average focus this week: ${focus}/10`, tone })
   }
 
   return insights
@@ -170,29 +156,33 @@ function Home({ setActiveTab }) {
   return (
     <div>
       <div className="home-greeting">
-        <span>{getGreeting()}</span>
-        {streak > 0 && <span className="streak-pill"><Flame size={14} /> {streak} day streak</span>}
+        {streak > 0 && (
+          <span className="streak-pill">
+            <Flame size={14} /> {streak} day streak
+          </span>
+        )}
       </div>
 
       <div className="summary-grid">
-  <div className="summary-card" onClick={() => setActiveTab("points")}>
-    <div className="summary-icon"><Star size={22} /></div>
-    <div className="summary-info">
-      <div className="summary-title">Points</div>
-      <div className="summary-stat">{getPointsBalance()} available</div>
-    </div>
-    <div className="summary-status pending">→</div>
-  </div>
-  <div className="summary-card" onClick={() => setActiveTab("meds")}>
-    <div className="summary-icon"><PillBottle size={22} /></div>
-    <div className="summary-info">
-      <div className="summary-title">Meds</div>
-      <div className="summary-stat">{meds.total === 0 ? "No meds" : `${meds.done}/${meds.total} taken`}</div>
-    </div>
-    <div className={`summary-status ${meds.done === meds.total && meds.total > 0 ? "done" : "pending"}`}>
-      {meds.done === meds.total && meds.total > 0 ? "✓" : "→"}
-    </div>
-  </div>
+        <div className="summary-card" onClick={() => setActiveTab("points")}>
+          <div className="summary-icon"><Star size={22} /></div>
+          <div className="summary-info">
+            <div className="summary-title">Points</div>
+            <div className="summary-stat">{getPointsBalance()} available</div>
+          </div>
+          <div className="summary-status pending">→</div>
+        </div>
+
+        <div className="summary-card" onClick={() => setActiveTab("meds")}>
+          <div className="summary-icon"><PillBottle size={22} /></div>
+          <div className="summary-info">
+            <div className="summary-title">Self Care</div>
+            <div className="summary-stat">{meds.total === 0 ? "No meds" : `${meds.done}/${meds.total} meds taken`}</div>
+          </div>
+          <div className={`summary-status ${meds.done === meds.total && meds.total > 0 ? "done" : "pending"}`}>
+            {meds.done === meds.total && meds.total > 0 ? "✓" : "→"}
+          </div>
+        </div>
 
         <div className="summary-card" onClick={() => setActiveTab("cleaning")}>
           <div className="summary-icon"><BrushCleaning size={22} /></div>
@@ -208,7 +198,7 @@ function Home({ setActiveTab }) {
         <div className="summary-card" onClick={() => setActiveTab("journal")}>
           <div className="summary-icon"><BookOpen size={22} /></div>
           <div className="summary-info">
-            <div className="summary-title">Journal</div>
+            <div className="summary-title">Insights</div>
             <div className="summary-stat">{journaled ? "Entry saved" : "Not yet today"}</div>
           </div>
           <div className={`summary-status ${journaled ? "done" : "pending"}`}>
@@ -230,7 +220,8 @@ function Home({ setActiveTab }) {
       )}
 
       <button className="catchup-btn" onClick={() => setShowCatchUp(!showCatchUp)}>
-        📅 Log a previous day
+        <CalendarDays size={16} style={{ display: "inline", marginRight: "6px" }} />
+        Log a previous day
       </button>
 
       {showCatchUp && (
