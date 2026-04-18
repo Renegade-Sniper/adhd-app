@@ -1167,3 +1167,81 @@ body {
   justify-content: center;
   gap: 6px;
 }
+.onboarding {
+  padding: 24px 20px;
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: white;
+}
+
+.app.dark .onboarding {
+  background: #0f1115;
+}
+
+.onboarding-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.onboarding-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.onboarding-title {
+  font-size: 26px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.app.dark .onboarding-title {
+  color: #f1f1f1;
+}
+
+.onboarding-subtitle {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.onboarding-section {
+  margin-bottom: 24px;
+}
+
+.onboarding-med-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.onboarding-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.onboarding-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.app.dark .onboarding-chip {
+  background: #1a1d23;
+  border-color: #2a2d33;
+  color: #888;
+}
+
+.onboarding-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
