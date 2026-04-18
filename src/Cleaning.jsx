@@ -69,19 +69,26 @@ const defaultRooms = [
 ]
 
 function Cleaning() {
-  const [activeRoom, setActiveRoom] = useState("kitchen")
- const [rooms, setRooms] = useState(() => {
-    const saved = localStorage.getItem("cleaning")
-    const customRooms = JSON.parse(localStorage.getItem("customRooms") || "null")
-    const roomList = customRooms || defaultRooms
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      return roomList.map(room => {
-        const existing = parsed.find(r => r.id === room.id)
-        return existing || { ...room, tasks: [] }
-      })
+  const [rooms, setRooms] = useState(() => {
+    try {
+      const saved = localStorage.getItem("cleaning")
+      const customRooms = JSON.parse(localStorage.getItem("customRooms") || "null")
+      const roomList = customRooms || defaultRooms
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (!Array.isArray(parsed)) throw new Error("invalid")
+        return roomList.map(room => {
+          const existing = parsed.find(r => r.id === room.id)
+          return existing && Array.isArray(existing.tasks)
+            ? existing
+            : { ...room, tasks: [] }
+        })
+      }
+      return roomList.map(room => ({ ...room, tasks: [] }))
+    } catch (e) {
+      localStorage.removeItem("cleaning")
+      return defaultRooms.map(room => ({ ...room, tasks: [] }))
     }
-    return roomList.map(room => ({ ...room, tasks: [] }))
   })
 
   useEffect(() => {
